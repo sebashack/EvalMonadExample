@@ -1,7 +1,7 @@
 module Main where
 
 import Data.Time.Clock
-import EvalM
+import EvalM (sudoku1, sudoku2, sudoku3)
 import System.Environment
 import Text.Printf
 import Control.Parallel
@@ -12,21 +12,26 @@ import Data.Maybe
 
 main :: IO ()
 main = do
-  [f] <- getArgs
+  [f, cmd] <- getArgs
   file <- readFile f
   let puzzles = lines file
-      solutions = runEval $ sudoku3 puzzles
-  print $ length $ filter isJust solutions
+  t0 <- getCurrentTime
+  case cmd of
+    "sudoku1" -> do
+      let solutions = sudoku1 puzzles
+      print $ length $ filter isJust solutions
+      printTimeSince t0
+    "sudoku2" -> do
+      let solutions = runEval $ sudoku2 puzzles
+      print $ length $ filter isJust solutions
+      printTimeSince t0
+    "sudoku3" -> do
+      let solutions = runEval $ sudoku3 puzzles
+      print $ length $ filter isJust solutions
+      printTimeSince t0
 
-  
+
+printTimeSince :: UTCTime -> IO ()
 printTimeSince t0 = do
   t1 <- getCurrentTime
   printf "time: %.2fs\n" (realToFrac (diffUTCTime t1 t0) :: Double)
-
-
-
-
-
-
-
-

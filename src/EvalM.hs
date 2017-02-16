@@ -2,7 +2,7 @@ module EvalM where
 
 import Control.Parallel
 import Control.Parallel.Strategies hiding (parMap)
-import Sudoku
+import Sudoku (Grid, solve)
 import Data.List (splitAt)
 import Control.DeepSeq (force)
 import Control.Monad (mapM)
@@ -12,13 +12,13 @@ import Control.Monad (mapM)
 -- all the elements of a list.
 
 parMap :: (a -> b) -> [a] -> Eval [b]
-parMap f xs = mapM (rpar . f) xs 
+parMap f xs = mapM (rpar . f) xs
 
 
 -- Multiple solutions without parallelism
 
 sudoku1 :: [String] -> [Maybe Grid]
-sudoku1 = fmap solve 
+sudoku1 = fmap solve
 
 
 -- Parallelism with fixed division of work.
@@ -35,5 +35,4 @@ sudoku2 puzzles = do
 -- Parallelism with dynamic division of work.
 
 sudoku3 :: [String] -> Eval [Maybe Grid]
-sudoku3 = parMap solve 
-
+sudoku3 = parMap solve
