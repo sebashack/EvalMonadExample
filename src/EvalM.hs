@@ -6,7 +6,7 @@ import Sudoku (Grid, solve)
 import Data.List (splitAt)
 import Control.DeepSeq (force)
 import Control.Monad
-import Strategy (parList)
+import Strategy (parList, badParList)
 
 -- parMap abstraction enables us to apply parallelism to
 -- all the elements of a list.
@@ -41,3 +41,8 @@ sudoku3 = parMap solve
 -- Refactoring with strategies
 sudoku4 :: [String] -> [Maybe Grid]
 sudoku4 xs = (solve <$> xs) `using` (parList rseq)
+
+
+-- Bad parList
+sudoku5 :: [String] -> [Maybe Grid]
+sudoku5 xs = (solve <$> xs) `using` (badParList rseq)

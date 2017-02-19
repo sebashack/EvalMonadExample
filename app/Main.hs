@@ -1,7 +1,8 @@
 module Main where
 
 import Data.Time.Clock
-import EvalM (sudoku1, sudoku2, sudoku3, sudoku4)
+import EvalM (sudoku1, sudoku2, sudoku3, sudoku4, sudoku5)
+import Par (sudoku6)
 import System.Environment
 import Text.Printf
 import Control.Parallel
@@ -32,7 +33,12 @@ main = do
     "sudoku4" -> do
       print $ length $ filter isJust (sudoku4 puzzles)
       printTimeSince t0
-
+    "sudoku5" -> do
+      print $ length $ filter isJust (sudoku5 puzzles)
+      printTimeSince t0
+    "sudoku6" -> do
+      print $ length $ filter isJust (sudoku6 puzzles)
+      printTimeSince t0
 
 
 printTimeSince :: UTCTime -> IO ()

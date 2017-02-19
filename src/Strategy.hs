@@ -1,4 +1,4 @@
-module Strategy (parList) where
+module Strategy (parList, badParList) where
 
 import Control.Parallel
 import Control.Parallel.Strategies hiding ( parMap
@@ -30,7 +30,9 @@ parPair (a,b) = do
 val = (someCompt 35, someCompt 36) `using` parPair
 
 
--- A Strategy for Evaluating a List in Parallel --
+
+
+-- A Strategy for Evaluating a List in Parallel -------------->>
 
 {-
    We can think of parMap as a composition of two parts:
@@ -45,3 +47,18 @@ parList strat = evalList (rparWith strat)
 -- evalList is a parameterized Strategy on lists.
 evalList :: Strategy a -> Strategy [a]
 evalList strat = mapM strat
+
+
+
+
+-- GC'd Sparks: Bad Optimization -------------------------->>
+
+badParList :: Strategy a -> Strategy [a]
+badParList strat xs = do
+  go xs
+  return xs
+  where
+    go [] = return ()
+    go (x:xs) = do
+      rparWith strat x
+      go xs
