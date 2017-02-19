@@ -1,18 +1,19 @@
 module EvalM where
 
 import Control.Parallel
-import Control.Parallel.Strategies hiding (parMap)
+import Control.Parallel.Strategies hiding (parMap, parList)
 import Sudoku (Grid, solve)
 import Data.List (splitAt)
 import Control.DeepSeq (force)
-import Control.Monad (mapM)
-
+import Control.Monad
+import Strategy (parList)
 
 -- parMap abstraction enables us to apply parallelism to
 -- all the elements of a list.
 
 parMap :: (a -> b) -> [a] -> Eval [b]
 parMap f xs = mapM (rpar . f) xs
+
 
 
 -- Multiple solutions without parallelism
@@ -33,6 +34,10 @@ sudoku2 puzzles = do
 
 
 -- Parallelism with dynamic division of work.
-
 sudoku3 :: [String] -> Eval [Maybe Grid]
 sudoku3 = parMap solve
+
+
+-- Refactoring with strategies
+sudoku4 :: [String] -> [Maybe Grid]
+sudoku4 xs = (solve <$> xs) `using` (parList rseq)
